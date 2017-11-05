@@ -31,7 +31,7 @@ const create = (req, res, next) => {
     .then(site =>
       res.status(201)
         .json({
-          site: site.toJSON({ virtuals: true, user: req.user })
+          site: site.toJSON({ user: req.user })
         }))
     .catch(next)
 }
