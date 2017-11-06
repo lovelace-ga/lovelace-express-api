@@ -10,41 +10,30 @@ const setUser = require('./concerns/set-current-user')
 const setModel = require('./concerns/set-mongoose-model')
 
 const index = (req, res, next) => {
-  Post.find()
+  Post.find({ _owner: req.user.id })
+  // .then((posts) => {
+  //   console.log('posts are', posts)
+  //   return posts
+  // })
     .then(posts => res.json({
       posts: posts.map((e) =>
-        e.toJSON({ virtuals: true, user: req.user }))
+        e.toJSON({ user: req.user }))
     }))
+
     .catch(next)
 }
 
 const show = (req, res) => {
   res.json({
-    post: req.post.toJSON({ virtuals: true, user: req.user })
+    post: req.post.toJSON({ user: req.user })
   })
 }
 
 const create = (req, res, next) => {
-  // const owner = req.user._id
   console.log('req.body is', req.body)
-  // const params = {
-  //   title: req.body.post.title,
-  //   content: req.body.post.content
-  // }
   const post = Object.assign(req.body.post, {
     _owner: req.user._id
   })
-  // console.log('post is', post)
-
-//   var p1 = Promise.resolve(3);
-// var p2 = 1337;
-// var p3 = new Promise((resolve, reject) => {
-//   setTimeout(resolve, 100, 'foo');
-// });
-//
-// Promise.all([p1, p2, p3]).then(values => {
-//   console.log(values); // [3, 1337, "foo"]
-// });
   const findSite = function () {
     return Site.findOne({ _owner: req.user.id })
   }
@@ -66,29 +55,20 @@ const create = (req, res, next) => {
           post: post.toJSON({ user: req.user })
         }))
     .catch(next)
-  // const findCurrentSite = function () {
-  //   Site.findOne({ _owner: req.user.id })
-  //     .then(() => {
-  //       return Post.create(params)
-  //     })
-  //     .then((post) => {
-  //       site.blog.push(params)
-  //       return site
-  //     })
-  //     .catch(console.error)
-  // }
-  // findCurrentSite()
-  // const currentSite = Site.find({ _owner: req.user.id }) // site is showing up as the query object, not the site.
-  // currentSite.blog.push(params)
-
-    // Site.insert
-
 }
 
 const update = (req, res, next) => {
   delete req.body.post._owner  // disallow owner reassignment.
-
   req.post.update(req.body.post)
+    .then((response) => {
+      const findSite = function () {
+        return Site.findOne({ _owner: req.user.id })
+      }
+      const site = findSite()
+      console.log('site is', site)
+      // site.save()
+      return response
+    })
     .then(() => res.sendStatus(204))
     .catch(next)
 }

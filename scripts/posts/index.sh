@@ -8,4 +8,6 @@ curl "${API}${URL_PATH}" \
   --request GET \
   --header "Authorization: Token token=$TOKEN"
 
+
+
 echo
