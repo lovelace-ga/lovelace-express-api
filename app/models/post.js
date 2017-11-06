@@ -1,14 +1,16 @@
 'use strict'
 
 const mongoose = require('mongoose')
-// const Post = require('./post')
 
-const siteSchema = new mongoose.Schema({
-  name: {
+const postSchema = new mongoose.Schema({
+  title: {
     type: String,
     required: true
   },
-  blog: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
+  content: {
+    type: String,
+    required: true
+  },
   _owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -17,6 +19,7 @@ const siteSchema = new mongoose.Schema({
 }, {
   timestamps: true,
   toJSON: {
+    // virtuals: true,
     transform: function (doc, ret, options) {
       const userId = (options.user && options.user._id) || false
       ret.editable = userId && userId.equals(doc._owner)
@@ -25,6 +28,10 @@ const siteSchema = new mongoose.Schema({
   }
 })
 
-const Site = mongoose.model('Site', siteSchema)
+// postSchema.virtual('length').get(function length () {
+//   return this.text.length
+// })
 
-module.exports = Site
+const Post = mongoose.model('Post', postSchema)
+
+module.exports = Post
