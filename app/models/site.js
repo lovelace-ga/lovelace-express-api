@@ -1,14 +1,14 @@
 'use strict'
 
 const mongoose = require('mongoose')
-// const Post = require('./post')
+const postModel = require('./post')
 
 const siteSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true
   },
-  blog: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
+  blog: [postModel.postSchema],
   _owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

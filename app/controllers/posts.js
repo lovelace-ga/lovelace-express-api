@@ -2,7 +2,7 @@
 
 const controller = require('lib/wiring/controller')
 const models = require('app/models')
-const Post = models.post
+const Post = models.post.Post
 const Site = models.site
 
 const authenticate = require('./concerns/authenticate')
@@ -27,28 +27,62 @@ const show = (req, res) => {
 const create = (req, res, next) => {
   // const owner = req.user._id
   console.log('req.body is', req.body)
-  const params = {
-    title: req.body.post.title,
-    content: req.body.post.content
-  }
-  console.log('params are', params)
+  // const params = {
+  //   title: req.body.post.title,
+  //   content: req.body.post.content
+  // }
   const post = Object.assign(req.body.post, {
     _owner: req.user._id
   })
-  console.log('post is', post)
-  // console.log('req is', req)
-  // console.log('Site index is', Site.find('59ff7febc31a8322faa92ddc'))
-  // const currentSite = Site.find({ _owner: req.user.id })
-  // console.log('currentSite is ', currentSite)
-  // currentSite.blog.push(params)
-  Post.create(post)
-    // Site.insert
+  // console.log('post is', post)
+
+//   var p1 = Promise.resolve(3);
+// var p2 = 1337;
+// var p3 = new Promise((resolve, reject) => {
+//   setTimeout(resolve, 100, 'foo');
+// });
+//
+// Promise.all([p1, p2, p3]).then(values => {
+//   console.log(values); // [3, 1337, "foo"]
+// });
+  const findSite = function () {
+    return Site.findOne({ _owner: req.user.id })
+  }
+  const createPost = function () {
+    return Post.create(post)
+  }
+  Promise.all([findSite(), createPost()])
+    .then((values) => {
+      values[0].blog.push(values[1].toJSON())
+      console.log('values is', values)
+      console.log('post is', values[1].toJSON())
+      values[0].save()
+      console.log('values[0]is ', values[0])
+      return values[1]
+    })
     .then(post =>
       res.status(201)
         .json({
           post: post.toJSON({ user: req.user })
         }))
     .catch(next)
+  // const findCurrentSite = function () {
+  //   Site.findOne({ _owner: req.user.id })
+  //     .then(() => {
+  //       return Post.create(params)
+  //     })
+  //     .then((post) => {
+  //       site.blog.push(params)
+  //       return site
+  //     })
+  //     .catch(console.error)
+  // }
+  // findCurrentSite()
+  // const currentSite = Site.find({ _owner: req.user.id }) // site is showing up as the query object, not the site.
+  // currentSite.blog.push(params)
+
+    // Site.insert
+
 }
 
 const update = (req, res, next) => {
@@ -74,6 +108,7 @@ module.exports = controller({
 }, { before: [
   { method: setUser, only: ['index', 'show'] },
   { method: authenticate, except: ['index', 'show'] },
+  // { method: setModel(Site), only: ['create'] },
   { method: setModel(Post), only: ['show'] },
   { method: setModel(Post, { forUser: true }), only: ['update', 'destroy'] }
 ] })
