@@ -57,25 +57,36 @@ const create = (req, res, next) => {
     .catch(next)
 }
 
-// const update = (req, res, next) => {
-//   const updatedPost = req.body.post
-//   console.log('req.post is', req.post)
-//   const findSite = function () {
-//     return Site.find({ _owner: req.user.id })
-//   }
-//   findSite()
-//     .then((site) => {
-//       console.log('site is', site)
-//       site.blog.update({$elemMatch: {id: req.post.id}}, {$set: {'$.title': req.body.post.title}})
-//       // site.blog._id(req.post.id)
-//
-//       site.save()
-//       console.log('site after saving is', site)
-//       return site
-//     })
-//
-//     .then(() => res.sendStatus(204))
-//     .catch(next)
+const update = (req, res, next) => {
+  const postParams = req.body.post
+  const findSite = function () {
+    return Site.findOne({ _owner: req.user.id })
+  }
+  const findPost = function () {
+    return Site.blog.findOne({_id: req.post.id})
+  }
+  const updatePost = function (site, post) {
+    return post.update(postParams)
+    .then(() => site.save())
+  }
+  Promise.all([findSite(), findPost()])
+    .then((values) => {
+      console.log('values is', values)
+      const site = values[0]
+      const post = values[1]
+      console.log('inside site is', site)
+      console.log('inside post is', post)
+      return updatePost(site, post)
+    })
+    .then((p) => {
+      // site.blog.find(post)
+      console.log('p is', p)
+      // site.blog.find(post)
+      // console.log('post in site is', site.blog.find(post))
+      return p
+    })
+    .then(() => res.sendStatus(204))
+    .catch(next)
 //   // const changePost = function () {
 //   //   return Post.update(updatedPost)
 //   // }
@@ -88,8 +99,48 @@ const create = (req, res, next) => {
 //   //     values[0].save()
 //   //     return values[1]
 //   //   })
+}
+// const update = (req, res, next) => {
+//   delete req.post._owner  // disallow owner reassignment.
+//
+//   const findSite = function () {
+//       // console.log('site is', Site.findOne({ _owner: req.user.id }))
+//     return Site.findOne({ _owner: req.user.id })
+//   }
+//   findSite()
+//
+//   // req.post.update(req.body.post)
+//   // findSite()
+//   // .then(site => {
+//   //   console.log('site is', site)
+//   //   site.save()
+//   //   console.log('site after saving is', site)
+//   //   return site
+//   // })
+//   // .then(() => {
+//   Site.findOneAndUpdate(
+//     { '_owner': req.user.id },
+//     {
+//       $set: {
+//         'blog': req.body.post
+//       }
+//     }
+//       )
+//   .then(() => res.sendStatus(204))
+//   .catch(next)
+//
+//   // findSite()
+//   //     .then((site) => {
+//   //       console.log('site is', site)
+//   //       site.save()
+//   //       console.log('site after saving is', site)
+//   //       return site
+//   //     })
+//
+//   // req.post.update(req.body.post)
+//   //   .then(() => res.sendStatus(204))
+//   //   .catch(next)
 // }
-
 // const update = (req, res, next) => {
 //   delete req.body.post._owner  // disallow owner reassignment.
 //   const findSite = function () {
