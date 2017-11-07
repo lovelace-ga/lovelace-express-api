@@ -116,27 +116,31 @@ const create = (req, res, next) => {
 //   Site.findOne({ _owner: req.user.id })
 //     .then((site) => {
 //       console.log('site.blog is', site.blog)
-//       site.blog.findIndex()
-//       for (let i = 0; i < site.blog.length; i++) {
+//       let i = 0
+//       let found = false
+//       for (i = 0; i < site.blog.length; i++) {
 //         if (site.blog[i]._id === req.post._id) {
-//           return 'hi'
+//           found = true
+//           break
+//         }
+//         if (found) {
+//           site.blog[i].title = req.body.post.title
+//           site.blog[i].content = req.body.post.content
 //         }
 //       }
 //     })
-
-//   req.post.update(req.body.post)
 //     .then(() => res.sendStatus(204))
 //     .catch(next)
-// /// ^^ THIS WORKS. DO NOT UPDATE ////
-//
-//   Site.findOne({ _owner: req.user.id })
-//   .populate('blog')
-//   .exec(function (err, site) {
-//     if (err) {
-//       throw err
-//     }
-//     console.log('JSON for site is', site)
-//   })
+/// ^^ THIS WORKS. DO NOT UPDATE ////
+  //
+  // Site.findOne({ _owner: req.user.id })
+  // .populate('blog')
+  // .exec(function (err, site) {
+  //   if (err) {
+  //     throw err
+  //   }
+  //   console.log('JSON for site is', site)
+  // })
 // }
 
 // IGNORE ALL BELOW COMMENTED OUT. JUST TESTING FOR UPDATE.
@@ -251,7 +255,7 @@ module.exports = controller({
   index,
   // show,
   create
-  // update,
+  // update
   // destroy
 }, { before: [
   { method: setUser, only: ['index', 'show'] },
