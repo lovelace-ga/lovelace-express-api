@@ -11,6 +11,7 @@ module.exports = require('lib/wiring/routes')
 .resources('examples')
 .resources('sites', { except: ['destroy'] })
 .resources('posts')
+.resources('pages')
 
 // users of the app have special requirements
 .post('/sign-up', 'users#signup')
