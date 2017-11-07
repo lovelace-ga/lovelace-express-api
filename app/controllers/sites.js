@@ -46,18 +46,18 @@ const update = (req, res, next) => {
 
 // not allowing destroy for sites, we don't want them to do that.... for now.
 
-// const destroy = (req, res, next) => {
-//   req.site.remove()
-//     .then(() => res.sendStatus(204))
-//     .catch(next)
-// }
+const destroy = (req, res, next) => {
+  req.site.remove()
+    .then(() => res.sendStatus(204))
+    .catch(next)
+}
 
 module.exports = controller({
   index,
   show,
   create,
-  update
-  // destroy
+  update,
+  destroy
 }, { before: [
   { method: setUser, only: ['index', 'show'] },
   { method: authenticate, except: ['index', 'show'] },
