@@ -11,24 +11,49 @@ const setUser = require('./concerns/set-current-user')
 const setModel = require('./concerns/set-mongoose-model')
 
 const index = (req, res, next) => {
-  Post.find({ _owner: req.user.id })
-  // .then((posts) => {
-  //   console.log('posts are', posts)
-  //   return posts
-  // })
-    .then(posts => res.json({
-      posts: posts.map((e) =>
+  console.log('this is index')
+  Site.findOne({ _owner: req.user.id })
+    .then((site) => {
+      // console.log('site.blog is', site.blog)
+      return site.blog
+    })
+    .then(blogPosts => res.json({
+      blog: blogPosts.map((e) =>
         e.toJSON({ user: req.user }))
     }))
+
+  // Post.find({ _owner: req.user.id })
+  // // .then((posts) => {
+  // //   console.log('posts are', posts)
+  // //   return posts
+  // // })
+  //   .then(posts => res.json({
+  //     posts: posts.map((e) =>
+  //       e.toJSON({ user: req.user }))
+  //   }))
 
     .catch(next)
 }
 
-const show = (req, res) => {
-  res.json({
-    post: req.post.toJSON({ user: req.user })
-  })
-}
+// const show = (req, res) => {
+//   console.log('show is running')
+//   Site.findOne({ _owner: req.user.id })
+//     .then((site) => {
+//       // console.log('site.blog is', site.blog) // array of objects
+//       return site.blog
+//     })
+//     .then((blogPosts) => {
+//       const showPost = blogPosts.findIndex((posti) => (posti._id === '5a01f2ab65186d23ea5413a0'))
+//       return blogPosts[showPost]
+//     })
+//     .then((showPost) => res.json({
+//       post: showPost.toJSON({ user: req.user })
+//     }))
+//
+//   // res.json({
+//   //   post: req.post.toJSON({ user: req.user })
+//   // })
+// }
 
 // const create = (req, res, next) => {
 //   console.log('req.body is', req.body)
@@ -85,17 +110,19 @@ const create = (req, res, next) => {
     .catch(next)
 }
 
-const update = (req, res, next) => {
-  delete req.body.post._owner  // disallow owner reassignment.
-
-  Site.findOne({ _owner: req.user.id })
-    .then((site) => {
-      for (let i = 0; i < site.blog.length; i++) {
-        if (site.blog[i]._id === req.post._id) {
-          return
-        }
-      }
-    })
+// const update = (req, res, next) => {
+//   delete req.body.post._owner  // disallow owner reassignment.
+//
+//   Site.findOne({ _owner: req.user.id })
+//     .then((site) => {
+//       console.log('site.blog is', site.blog)
+//       site.blog.findIndex()
+//       for (let i = 0; i < site.blog.length; i++) {
+//         if (site.blog[i]._id === req.post._id) {
+//           return 'hi'
+//         }
+//       }
+//     })
 
 //   req.post.update(req.body.post)
 //     .then(() => res.sendStatus(204))
@@ -110,7 +137,7 @@ const update = (req, res, next) => {
 //     }
 //     console.log('JSON for site is', site)
 //   })
-}
+// }
 
 // IGNORE ALL BELOW COMMENTED OUT. JUST TESTING FOR UPDATE.
 
@@ -203,29 +230,29 @@ const update = (req, res, next) => {
 
   // console.log(findSite())
 
-const destroy = (req, res, next) => {
-  Site.findOne({
-    _owner: req.user.id,
-    'blog._id': req.post._id
-  })
-    .then((site) => {
-      console.log('site in destroy is', site)
-      // site.update(
-      // { 'blog._id': req.post._id },
-      // { $pull: { blog: { $in: [ req.post._id ] } } })
-    })
-
-  req.post.remove()
-    .then(() => res.sendStatus(204))
-    .catch(next)
-}
+// const destroy = (req, res, next) => {
+//   Site.findOne({
+//     _owner: req.user.id,
+//     'blog._id': req.post._id
+//   })
+//     .then((site) => {
+//       console.log('site in destroy is', site)
+//       // site.update(
+//       // { 'blog._id': req.post._id },
+//       // { $pull: { blog: { $in: [ req.post._id ] } } })
+//     })
+//
+//   req.post.remove()
+//     .then(() => res.sendStatus(204))
+//     .catch(next)
+// }
 
 module.exports = controller({
   index,
-  show,
-  create,
-  update,
-  destroy
+  // show,
+  create
+  // update,
+  // destroy
 }, { before: [
   { method: setUser, only: ['index', 'show'] },
   { method: authenticate, except: ['index', 'show'] },
