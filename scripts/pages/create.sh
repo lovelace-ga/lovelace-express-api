@@ -1,7 +1,7 @@
 #!/bin/bash
 
 API="http://localhost:4741"
-URL_PATH="/pages"
+URL_PATH="/create-page"
 
 curl "${API}${URL_PATH}" \
   --include \

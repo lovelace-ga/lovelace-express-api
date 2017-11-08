@@ -2,6 +2,7 @@
 
 API="http://localhost:4741"
 URL_PATH="/deletepost"
+
 curl "${API}${URL_PATH}" \
   --include \
   --request PATCH \

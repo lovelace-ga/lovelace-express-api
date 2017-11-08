@@ -3,27 +3,27 @@
 const controller = require('lib/wiring/controller')
 const models = require('app/models')
 const Page = models.page.Page
-const Site = models.site
+// const Site = models.site
 // const siteController = require('./sites.js')
 
 const authenticate = require('./concerns/authenticate')
 const setUser = require('./concerns/set-current-user')
 const setModel = require('./concerns/set-mongoose-model')
-
-const index = (req, res, next) => {
-  console.log('this is index')
-  Site.findOne({ _owner: req.user.id })
-    .then((site) => {
-      // console.log('site.pages is', site.pages)
-      return site.pages
-    })
-    .then(pagesPages => res.json({
-      pages: pagesPages.map((e) =>
-        e.toJSON({ user: req.user }))
-    }))
-
-    .catch(next)
-}
+//
+// const index = (req, res, next) => {
+//   console.log('this is index')
+//   Site.findOne({ _owner: req.user.id })
+//     .then((site) => {
+//       // console.log('site.pages is', site.pages)
+//       return site.pages
+//     })
+//     .then(pagesPages => res.json({
+//       pages: pagesPages.map((e) =>
+//         e.toJSON({ user: req.user }))
+//     }))
+//
+//     .catch(next)
+// }
 
 // const show = (req, res) => {
 //   console.log('show is running')
@@ -76,29 +76,29 @@ const index = (req, res, next) => {
 //     .catch(next)
 // }
 
-const create = (req, res, next) => {
-  console.log('req.body is', req.body)
-  const page = Object.assign(req.body.page, {
-    _owner: req.user._id
-  })
-
-  Site.findOne({ _owner: req.user.id })
-    .then((site) => {
-      site.pages.push(page)
-      site.save()
-      return site
-    })
-    .then((returnVal) => {
-      console.log('returnVal is', returnVal)
-      return returnVal
-    })
-    .then(site =>
-      res.status(201)
-        .json({
-          site: site.toJSON({ user: req.user })
-        }))
-    .catch(next)
-}
+// const create = (req, res, next) => {
+//   console.log('req.body is', req.body)
+//   const page = Object.assign(req.body.page, {
+//     _owner: req.user._id
+//   })
+//
+//   Site.findOne({ _owner: req.user.id })
+//     .then((site) => {
+//       site.pages.push(page)
+//       site.save()
+//       return site
+//     })
+//     .then((returnVal) => {
+//       console.log('returnVal is', returnVal)
+//       return returnVal
+//     })
+//     .then(site =>
+//       res.status(201)
+//         .json({
+//           site: site.toJSON({ user: req.user })
+//         }))
+//     .catch(next)
+// }
 
 // const update = (req, res, next) => {
 //   delete req.body.page._owner  // disallow owner reassignment.
@@ -238,9 +238,9 @@ const create = (req, res, next) => {
 // }
 
 module.exports = controller({
-  index,
+  // index,
   // show,
-  create
+  // create
   // update,
   // destroy
 }, { before: [
