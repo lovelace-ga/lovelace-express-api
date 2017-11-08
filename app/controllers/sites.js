@@ -37,6 +37,37 @@ const create = (req, res, next) => {
     .catch(next)
 }
 
+const update = (req, res, next) => {
+  delete req.body.site._owner  // disallow owner reassignment.
+  console.log('req.site is', req.site)
+  console.log('req.site.blog is', req.site.blog)
+  console.log('req.site.blog[0] is', req.site.blog[0])
+  console.log('req.site.blog[0].title is', req.site.blog[0].title)
+  console.log('req.body is', req.body)
+  req.site.update(req.body.site)
+    .then(() => res.sendStatus(204))
+    .catch(next)
+}
+
+const destroy = (req, res, next) => {
+  req.site.remove()
+    .then(() => res.sendStatus(204))
+    .catch(next)
+}
+
+const getPosts = (req, res, next) => {
+  console.log('this is index')
+  Site.findOne({ _owner: req.user.id })
+    .then((site) => {
+      return site.blog
+    })
+    .then(blogPosts => res.json({
+      blog: blogPosts.map((e) =>
+        e.toJSON({ user: req.user }))
+    }))
+    .catch(next)
+}
+
 const deletePost = (req, res, next) => {
   console.log('is this even running?')
   const findSite = function () {
@@ -52,18 +83,6 @@ const deletePost = (req, res, next) => {
       console.log('site after saving is', site)
       return site
     })
-    .then(() => res.sendStatus(204))
-    .catch(next)
-}
-
-const update = (req, res, next) => {
-  delete req.body.site._owner  // disallow owner reassignment.
-  console.log('req.site is', req.site)
-  console.log('req.site.blog is', req.site.blog)
-  console.log('req.site.blog[0] is', req.site.blog[0])
-  console.log('req.site.blog[0].title is', req.site.blog[0].title)
-  console.log('req.body is', req.body)
-  req.site.update(req.body.site)
     .then(() => res.sendStatus(204))
     .catch(next)
 }
@@ -92,9 +111,40 @@ const updatePost = (req, res, next) => {
   .catch(next)
 }
 
-const destroy = (req, res, next) => {
-  req.site.remove()
-    .then(() => res.sendStatus(204))
+// const getPosts = (req, res, next) => {
+//   console.log('this is index')
+//   Site.findOne({ _owner: req.user.id })
+//     .then((site) => {
+//       return site.blog
+//     })
+//     .then(blogPosts => res.json({
+//       blog: blogPosts.map((e) =>
+//         e.toJSON({ user: req.user }))
+//     }))
+//     .catch(next)
+// }
+
+const createPost = (req, res, next) => {
+  console.log('req.body is', req.body)
+  const post = Object.assign(req.body.post, {
+    _owner: req.user._id
+  })
+
+  Site.findOne({ _owner: req.user.id })
+    .then((site) => {
+      site.blog.push(post)
+      site.save()
+      return site
+    })
+    .then((returnVal) => {
+      console.log('returnVal is', returnVal)
+      return returnVal
+    })
+    .then(site =>
+      res.status(201)
+        .json({
+          site: site.toJSON({ user: req.user })
+        }))
     .catch(next)
 }
 
@@ -105,7 +155,9 @@ module.exports = controller({
   update,
   destroy,
   deletePost,
-  updatePost
+  updatePost,
+  getPosts,
+  createPost
 }, { before: [
   { method: setUser, only: ['index', 'show'] },
   { method: authenticate, except: ['index', 'show'] },

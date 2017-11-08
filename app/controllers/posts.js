@@ -3,25 +3,26 @@
 const controller = require('lib/wiring/controller')
 const models = require('app/models')
 const Post = models.post.Post
-const Site = models.site
+// const Site = models.site
 // const siteController = require('./sites.js')
 
 const authenticate = require('./concerns/authenticate')
 const setUser = require('./concerns/set-current-user')
 const setModel = require('./concerns/set-mongoose-model')
 
-const index = (req, res, next) => {
-  console.log('this is index')
-  Site.findOne({ _owner: req.user.id })
-    .then((site) => {
-      // console.log('site.blog is', site.blog)
-      return site.blog
-    })
-    .then(blogPosts => res.json({
-      blog: blogPosts.map((e) =>
-        e.toJSON({ user: req.user }))
-    }))
-
+// const index = (req, res, next) => {
+//   console.log('this is index')
+//   Site.findOne({ _owner: req.user.id })
+//     .then((site) => {
+//       // console.log('site.blog is', site.blog)
+//       return site.blog
+//     })
+//     .then(blogPosts => res.json({
+//       blog: blogPosts.map((e) =>
+//         e.toJSON({ user: req.user }))
+//     }))
+//     .catch(next)
+// }
   // Post.find({ _owner: req.user.id })
   // // .then((posts) => {
   // //   console.log('posts are', posts)
@@ -31,9 +32,6 @@ const index = (req, res, next) => {
   //     posts: posts.map((e) =>
   //       e.toJSON({ user: req.user }))
   //   }))
-
-    .catch(next)
-}
 
 // const show = (req, res) => {
 //   console.log('show is running')
@@ -86,29 +84,29 @@ const index = (req, res, next) => {
 //     .catch(next)
 // }
 
-const create = (req, res, next) => {
-  console.log('req.body is', req.body)
-  const post = Object.assign(req.body.post, {
-    _owner: req.user._id
-  })
-
-  Site.findOne({ _owner: req.user.id })
-    .then((site) => {
-      site.blog.push(post)
-      site.save()
-      return site
-    })
-    .then((returnVal) => {
-      console.log('returnVal is', returnVal)
-      return returnVal
-    })
-    .then(site =>
-      res.status(201)
-        .json({
-          site: site.toJSON({ user: req.user })
-        }))
-    .catch(next)
-}
+// const create = (req, res, next) => {
+//   console.log('req.body is', req.body)
+//   const post = Object.assign(req.body.post, {
+//     _owner: req.user._id
+//   })
+//
+//   Site.findOne({ _owner: req.user.id })
+//     .then((site) => {
+//       site.blog.push(post)
+//       site.save()
+//       return site
+//     })
+//     .then((returnVal) => {
+//       console.log('returnVal is', returnVal)
+//       return returnVal
+//     })
+//     .then(site =>
+//       res.status(201)
+//         .json({
+//           site: site.toJSON({ user: req.user })
+//         }))
+//     .catch(next)
+// }
 
 // const update = (req, res, next) => {
 //   delete req.body.post._owner  // disallow owner reassignment.
@@ -252,9 +250,9 @@ const create = (req, res, next) => {
 // }
 
 module.exports = controller({
-  index,
+  // index,
   // show,
-  create
+  // create
   // update
   // destroy
 }, { before: [

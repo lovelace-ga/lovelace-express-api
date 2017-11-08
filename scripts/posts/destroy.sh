@@ -9,7 +9,7 @@ curl "${API}${URL_PATH}" \
   --header "Authorization: Token token=${TOKEN}" \
   --data '{
     "site": {
-      "postID": "'"${POSTID}"'"
+      "postID": "'"${ID}"'"
     }
   }'
 echo
