@@ -86,9 +86,9 @@ const updatePost = (req, res, next) => {
     {
       function (err, site) {
         if (err) {
-          console.error(err)
+          throw err
         }
-        console.log(site)
+        return site
       }
     }
 
@@ -147,9 +147,9 @@ const updatePage = (req, res, next) => {
     {
       function (err, site) {
         if (err) {
-          console.error(err)
+          throw err
         }
-        console.log(site)
+        return site
       }
     }
 
