@@ -14,6 +14,9 @@ module.exports = require('lib/wiring/routes')
 .resources('pages')
 
 // users of the app have special requirements
+.patch('/update-post', 'sites#updatePost')
+.patch('/deletepost', 'sites#deletePost')
+
 .post('/sign-up', 'users#signup')
 .post('/sign-in', 'users#signin')
 .delete('/sign-out/:id', 'users#signout')

@@ -112,33 +112,33 @@ const create = (req, res, next) => {
 
 // const update = (req, res, next) => {
 //   delete req.body.post._owner  // disallow owner reassignment.
-//
+//   console.log('update req.body is', req.body)
 //   Site.findOne({ _owner: req.user.id })
 //     .then((site) => {
 //       console.log('site.blog is', site.blog)
-//       let i = 0
-//       let found = false
-//       for (i = 0; i < site.blog.length; i++) {
-//         if (site.blog[i]._id === req.post._id) {
-//           found = true
-//           break
-//         }
-//         if (found) {
-//           site.blog[i].title = req.body.post.title
-//           site.blog[i].content = req.body.post.content
+//       for (let i = 0; i < site.blog.length; i++) {
+//         if (site.blog[i]._id === req.body.post._id) {
+//           console.log('we found a blogpost at position:', i)
 //         }
 //       }
 //     })
-//     .then(() => res.sendStatus(204))
-//     .catch(next)
-/// ^^ THIS WORKS. DO NOT UPDATE ////
-  //
-  // Site.findOne({ _owner: req.user.id })
-  // .populate('blog')
-  // .exec(function (err, site) {
-  //   if (err) {
-  //     throw err
-  //   }
+// }
+    // const params = {
+    //
+    // }
+
+  // req.example.update(req.body.example)
+  //   .then(() => res.sendStatus(204))
+  //   .catch(next)
+
+// / ^^ THIS WORKS. DO NOT UPDATE ////
+//
+//   Site.findOne({ _owner: req.user.id })
+//   .populate('blog')
+//   .exec(function (err, site) {
+//     if (err) {
+//       throw err
+//     }
   //   console.log('JSON for site is', site)
   // })
 // }

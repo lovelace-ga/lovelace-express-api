@@ -37,14 +37,60 @@ const create = (req, res, next) => {
     .catch(next)
 }
 
+const deletePost = (req, res, next) => {
+  console.log('is this even running?')
+  const findSite = function () {
+    console.log('site is', Site.findOne({ _owner: req.user.id }))
+    return Site.findOne({ _owner: req.user.id })
+  }
+  findSite()
+    .then((site) => {
+      console.log('site is', site)
+      console.log('postID is', req.body.site.postID)
+      site.blog.id(req.body.site.postID).remove()
+      site.save()
+      console.log('site after saving is', site)
+      return site
+    })
+    .then(() => res.sendStatus(204))
+    .catch(next)
+}
+
 const update = (req, res, next) => {
-  delete req.site._owner  // disallow owner reassignment.
+  delete req.body.site._owner  // disallow owner reassignment.
+  console.log('req.site is', req.site)
+  console.log('req.site.blog is', req.site.blog)
+  console.log('req.site.blog[0] is', req.site.blog[0])
+  console.log('req.site.blog[0].title is', req.site.blog[0].title)
+  console.log('req.body is', req.body)
   req.site.update(req.body.site)
     .then(() => res.sendStatus(204))
     .catch(next)
 }
 
-// not allowing destroy for sites, we don't want them to do that.... for now.
+const updatePost = (req, res, next) => {
+  delete req.body.post._owner  // disallow owner reassignment.
+
+  Site.findOneAndUpdate(
+    { '_owner': req.user.id, 'blog._id': req.body.post._id },
+    { $set: {
+      'blog.$.title': req.body.post.title,
+      'blog.$.content': req.body.post.content
+    }
+    },
+    {
+      function (err, site) {
+        if (err) {
+          console.error(err)
+        }
+        console.log(site)
+      }
+    }
+
+  )
+  .then(() => res.sendStatus(204))
+  .catch(next)
+}
 
 const destroy = (req, res, next) => {
   req.site.remove()
@@ -57,7 +103,9 @@ module.exports = controller({
   show,
   create,
   update,
-  destroy
+  destroy,
+  deletePost,
+  updatePost
 }, { before: [
   { method: setUser, only: ['index', 'show'] },
   { method: authenticate, except: ['index', 'show'] },

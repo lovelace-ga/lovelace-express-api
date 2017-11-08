@@ -10,7 +10,12 @@ curl "${API}${URL_PATH}/${ID}" \
   --header "Authorization: Token token=${TOKEN}" \
   --data '{
     "site": {
-      "name": "'"${NAME}"'"
+      "name": "'"${NAME}"'",
+      "blog": [
+      {
+        "title": "'"${TITLE}"'"
+      }
+      ]
     }
   }'
 
