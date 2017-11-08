@@ -2,6 +2,7 @@
 
 API="http://localhost:4741"
 URL_PATH="/deletepost"
+
 curl "${API}${URL_PATH}" \
   --include \
   --request PATCH \
@@ -9,7 +10,7 @@ curl "${API}${URL_PATH}" \
   --header "Authorization: Token token=${TOKEN}" \
   --data '{
     "site": {
-      "postID": "'"${POSTID}"'"
+      "postID": "'"${ID}"'"
     }
   }'
 echo

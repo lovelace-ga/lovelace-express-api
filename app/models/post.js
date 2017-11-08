@@ -11,11 +11,6 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  // _site: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'Site',
-  //   required: true
-  // },
   _owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -24,7 +19,6 @@ const postSchema = new mongoose.Schema({
 }, {
   timestamps: true,
   toJSON: {
-    // virtuals: true,
     transform: function (doc, ret, options) {
       const userId = (options.user && options.user._id) || false
       ret.editable = userId && userId.equals(doc._owner)
@@ -32,10 +26,6 @@ const postSchema = new mongoose.Schema({
     }
   }
 })
-
-// postSchema.virtual('length').get(function length () {
-//   return this.text.length
-// })
 
 const Post = mongoose.model('Post', postSchema)
 

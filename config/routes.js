@@ -10,12 +10,16 @@ module.exports = require('lib/wiring/routes')
 // standards RESTful routes
 .resources('examples')
 .resources('sites')
-.resources('posts')
-.resources('pages')
 
 // users of the app have special requirements
 .patch('/update-post', 'sites#updatePost')
 .patch('/deletepost', 'sites#deletePost')
+.get('/get-posts', 'sites#getPosts')
+.post('/create-post', 'sites#createPost')
+
+.patch('/update-page', 'sites#updatePage')
+.patch('/delete-page', 'sites#deletePage')
+.post('/create-page', 'sites#createPage')
 
 .post('/sign-up', 'users#signup')
 .post('/sign-in', 'users#signin')
