@@ -8,6 +8,7 @@ const authenticate = require('./concerns/authenticate')
 const setUser = require('./concerns/set-current-user')
 const setModel = require('./concerns/set-mongoose-model')
 
+// CRUD actions for SITES
 const create = (req, res, next) => {
   const site = Object.assign(req.body.site, {
     _owner: req.user._id
@@ -55,6 +56,7 @@ const destroy = (req, res, next) => {
     .catch(next)
 }
 
+// Create, Update, Delete actions for POSTS within a SITE
 const createPost = (req, res, next) => {
   console.log('req.body is', req.body)
   const post = Object.assign(req.body.post, {
@@ -122,6 +124,7 @@ const deletePost = (req, res, next) => {
     .catch(next)
 }
 
+// Create, Update, and Delete actions for PAGES within a SITE
 const createPage = (req, res, next) => {
   console.log('req.body is', req.body)
   const page = Object.assign(req.body.page, {
