@@ -13,7 +13,6 @@ const create = (req, res, next) => {
   const site = Object.assign(req.body.site, {
     _owner: req.user._id
   })
-  console.log('req', req)
   Site.create(site)
     .then(site =>
       res.status(201)
@@ -40,11 +39,6 @@ const show = (req, res) => {
 
 const update = (req, res, next) => {
   delete req.body.site._owner  // disallow owner reassignment.
-  console.log('req.site is', req.site)
-  console.log('req.site.blog is', req.site.blog)
-  console.log('req.site.blog[0] is', req.site.blog[0])
-  console.log('req.site.blog[0].title is', req.site.blog[0].title)
-  console.log('req.body is', req.body)
   req.site.update(req.body.site)
     .then(() => res.sendStatus(204))
     .catch(next)
@@ -58,7 +52,6 @@ const destroy = (req, res, next) => {
 
 // Create, Update, Delete actions for POSTS within a SITE
 const createPost = (req, res, next) => {
-  console.log('req.body is', req.body)
   const post = Object.assign(req.body.post, {
     _owner: req.user._id
   })
@@ -70,7 +63,6 @@ const createPost = (req, res, next) => {
       return site
     })
     .then((returnVal) => {
-      console.log('returnVal is', returnVal)
       return returnVal
     })
     .then(site =>
@@ -94,9 +86,9 @@ const updatePost = (req, res, next) => {
     {
       function (err, site) {
         if (err) {
-          console.error(err)
+          throw err
         }
-        console.log(site)
+        return site
       }
     }
 
@@ -106,18 +98,13 @@ const updatePost = (req, res, next) => {
 }
 
 const deletePost = (req, res, next) => {
-  console.log('is this even running?')
   const findSite = function () {
-    console.log('site is', Site.findOne({ _owner: req.user.id }))
     return Site.findOne({ _owner: req.user.id })
   }
   findSite()
     .then((site) => {
-      console.log('site is', site)
-      console.log('postID is', req.body.site.postID)
       site.blog.id(req.body.site.postID).remove()
       site.save()
-      console.log('site after saving is', site)
       return site
     })
     .then(() => res.sendStatus(204))
@@ -126,7 +113,6 @@ const deletePost = (req, res, next) => {
 
 // Create, Update, and Delete actions for PAGES within a SITE
 const createPage = (req, res, next) => {
-  console.log('req.body is', req.body)
   const page = Object.assign(req.body.page, {
     _owner: req.user._id
   })
@@ -138,7 +124,6 @@ const createPage = (req, res, next) => {
       return site
     })
     .then((returnVal) => {
-      console.log('returnVal is', returnVal)
       return returnVal
     })
     .then(site =>
@@ -162,9 +147,9 @@ const updatePage = (req, res, next) => {
     {
       function (err, site) {
         if (err) {
-          console.error(err)
+          throw err
         }
-        console.log(site)
+        return site
       }
     }
 
@@ -174,18 +159,13 @@ const updatePage = (req, res, next) => {
 }
 
 const deletePage = (req, res, next) => {
-  console.log('is this even running?')
   const findSite = function () {
-    console.log('site is', Site.findOne({ _owner: req.user.id }))
     return Site.findOne({ _owner: req.user.id })
   }
   findSite()
     .then((site) => {
-      console.log('site is', site)
-      console.log('postID is', req.body.site.pageID)
       site.pages.id(req.body.site.pageID).remove()
       site.save()
-      console.log('site after saving is', site)
       return site
     })
     .then(() => res.sendStatus(204))
